@@ -13,14 +13,14 @@ import java.util.Random;
 public class MonoAlphabitique implements ICypher {
 
 	final char[] KeyBase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-			'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'S', 'T', 'U', 'V', 'W', 'X',
+			'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
 			'Y', 'Z' };
 
-	private static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private static final String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + " ";
 
 
 	@Override
-	public void encode(File message, File key, File crypted) {
+	public String encode(File message, File key, File crypted) {
 
 		String readKey = this.readKey(key).toString();
 		String readMessage = this.readKey(message).toString();
@@ -28,17 +28,18 @@ public class MonoAlphabitique implements ICypher {
 		HashMap<Character,Character> table = buildConversionTable(readKey, false);
 		StringBuilder stringBuilder = new StringBuilder();
 
-		for (int i = 0 ; i < message.length(); i++){
+		for (int i = 0 ; i < readMessage.length()-1; i++){
 			 stringBuilder.append(table.get(readMessage.charAt(i)));
 		}
 
 		writeKey(stringBuilder, crypted);
-		System.out.println("encoded:  "+stringBuilder);
+		
+		return stringBuilder.toString();
 	}
 
 	private HashMap<Character, Character> buildConversionTable(String key, boolean reverse){
 		HashMap<Character,Character> table = new HashMap<Character, Character>();
-		for(int i=0 ; i < alphabet.length() ; i++){
+		for(int i=0 ; i < alphabet.length(); i++){
 			if(reverse){
 				table.put(key.charAt(i), alphabet.charAt(i));
 			}else{
@@ -46,38 +47,60 @@ public class MonoAlphabitique implements ICypher {
 				
 			}
 		}
-		System.out.println("encoded:  "+table);
+		System.out.println("encoded:  "+ table);
 		return table;
 		
 	}
 	@Override
-	public void decode(File message1, File key, File crypted1) {
-		// TODO Auto-generated method stub
+	public String decode(File message1, File key, File crypted1) {
+		
+		String readKey = this.readKey(key).toString();
+		String readcrypted= this.readKey(message1).toString();
+		
+		  HashMap<Character,Character> table = buildConversionTable(readKey, true);
+	        StringBuilder stringBuilder = new StringBuilder();
+
+	        for (int i = 0 ; i < readcrypted.length()-1; i++){
+	            stringBuilder.append(table.get(readcrypted.charAt(i)));
+	        }
+
+	     
+	        writeKey(stringBuilder, crypted1);
+			
+			return stringBuilder.toString();
 
 	}
 
 	@Override
 	public Object generateKey(File key) {
 
-		char alphabet[] = KeyBase.clone();
+		 char[] charTable = alphabet.toCharArray();
+	        int currentIndex = charTable.length, randomIndex;
+	        char temporaryValue;
 
+	        // While there remain elements to shuffle...
+	        while (0 != currentIndex) {
 
-		Random rand = new Random();
-		for (int i = 0; i < alphabet.length; i++) {
-			int randomIndex = rand.nextInt(alphabet.length - i + 1);
-			char c = alphabet[i];
-			alphabet[randomIndex] = c;
-		}
+	            // Pick a remaining element...
+	            randomIndex = (int) Math.floor(Math.random() * currentIndex);
+	            currentIndex -= 1;
+
+	            // And swap it with the current element.
+	            temporaryValue = charTable[currentIndex];
+	            charTable[currentIndex] = charTable[randomIndex];
+	            charTable[randomIndex] = temporaryValue;
+	        }
+
 
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(key));
-			writer.write(new String(alphabet));
+			writer.write(new String(charTable));
 			writer.flush();
 			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return rand;
+		  return new String(charTable);
 	}
 
 	@Override

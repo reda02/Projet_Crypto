@@ -6,8 +6,8 @@ public interface ICypher {
 	
 	//String encode(String message, Object key);
     //String decode(String crypted, Object key);
-	void encode(File message, File key,File crypted);
-	void decode(File message, File key,File crypted1);
+	String encode(File message, File key,File crypted);
+	String decode(File message, File key,File crypted1);
   
     Object readKey(File f);
     void writeKey(Object key ,File f);
