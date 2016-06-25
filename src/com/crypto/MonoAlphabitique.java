@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Random;
 
 public class MonoAlphabitique implements ICypher {
 
@@ -74,18 +73,18 @@ public class MonoAlphabitique implements ICypher {
 	@Override
 	public Object generateKey(File key) {
 
-		 char[] charTable = alphabet.toCharArray();
+		   char[] charTable = alphabet.toCharArray();
 	        int currentIndex = charTable.length, randomIndex;
 	        char temporaryValue;
 
-	        // While there remain elements to shuffle...
+	     // Bien qu'il reste des éléments de mélanger ...
 	        while (0 != currentIndex) {
 
-	            // Pick a remaining element...
+	        	// Choisissez un élément restant ...
 	            randomIndex = (int) Math.floor(Math.random() * currentIndex);
 	            currentIndex -= 1;
 
-	            // And swap it with the current element.
+	           // Et échanger avec l'élément courant.
 	            temporaryValue = charTable[currentIndex];
 	            charTable[currentIndex] = charTable[randomIndex];
 	            charTable[randomIndex] = temporaryValue;
